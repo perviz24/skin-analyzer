@@ -39,6 +39,9 @@ export function PhotoPreview({ photo, onRetake }: PhotoPreviewProps) {
       }
 
       const data = await res.json();
+
+      // Store result in sessionStorage (no database yet)
+      sessionStorage.setItem(`analysis-${data.id}`, JSON.stringify(data));
       router.push(`/resultat/${data.id}`);
     } catch (err) {
       const message =
