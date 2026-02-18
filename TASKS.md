@@ -3,37 +3,38 @@
 ## Build Order: Layout shell → Static UI → Data integration → Interactions
 
 ### Phase 2: Scaffold
-- [ ] **T1**: Scaffold Next.js + shadcn + Convex + AI packages
-- [ ] **T2**: Create layout shell (header with logo, footer with disclaimer)
+- [x] **T1**: Scaffold Next.js + shadcn + Convex + AI packages
+- [x] **T2**: Create layout shell (header with logo, footer with disclaimer)
 
 ### Phase 3: Build — Landing Page
-- [ ] **T3**: Landing page hero section with CTA
-- [ ] **T4**: How it works section (3 steps)
-- [ ] **T5**: Trust badges section
+- [x] **T3**: Landing page hero section with CTA
+- [x] **T4**: How it works section (3 steps)
+- [x] **T5**: Trust badges section
 
 ### Phase 3: Build — Upload Flow
-- [ ] **T6**: Upload page UI (camera capture + file upload)
-- [ ] **T7**: Photo preview with retake and consent
+- [x] **T6**: Upload page UI (camera capture + file upload)
+- [x] **T7**: Photo preview with retake and consent
 
 ### Phase 3: Build — Data Layer
-- [ ] **T8**: Convex schema + seed treatments data
-- [ ] **T9**: AI analysis API route (Claude Vision)
+- [ ] **T8**: Convex schema + seed treatments data *(schema written, Convex not configured yet)*
+- [x] **T9**: AI analysis API route (Claude Vision)
 
 ### Phase 3: Build — Results Page
-- [ ] **T10**: Results page - skin score card
-- [ ] **T11**: Results page - findings list
-- [ ] **T12**: Results page - treatment recommendations
-- [ ] **T13**: Results page - photo overlay markers
+- [x] **T10**: Results page - skin score card
+- [x] **T11**: Results page - findings list
+- [x] **T12**: Results page - treatment recommendations
+- [ ] **T13**: Results page - photo overlay markers *(deferred to Phase 2)*
 
 ### Phase 3: Build — Polish
-- [ ] **T14**: Loading/analyzing animation state
-- [ ] **T15**: Error handling + empty states
+- [x] **T14**: Loading/analyzing animation state
+- [x] **T15**: Error handling + empty states + per-page metadata
 
 ### Stretch (if time/tokens allow)
-- [ ] Share results link
+- [x] Share results link *(Web Share API + clipboard fallback on results page)*
 - [ ] Privacy policy page
 - [ ] Analytics event tracking (anonymous)
 
 ---
-**Session limit**: 15 feature commits (HARD STOP 8)
-**Context check**: After T5, T10, T15 (HARD STOP 6)
+**Session 1 result**: 13/15 tasks completed. 10 commits pushed.
+**Remaining**: T8 (Convex setup — needs human action), T13 (photo overlays — deferred)
+**Next session**: Wire Convex storage, deploy to Vercel
