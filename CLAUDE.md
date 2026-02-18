@@ -43,6 +43,17 @@ git diff --cached --name-only | ForEach-Object { $lines = (Get-Content $_ | Meas
 
 If 2 or 3 is YES → ⛔ STOP. You are batching. Split into separate commits.
 
+**⛔ SCAFFOLD BOUNDARY RULE:**
+`scaffold:` commits may ONLY contain config/boilerplate files:
+- package.json, tsconfig.json, tailwind.config.ts, next.config.ts, .gitignore
+- layout.tsx (default template only), page.tsx (default Next.js template only)
+- globals.css, lib/utils.ts, components/ui/* (shadcn defaults)
+- Error boundaries: error.tsx, not-found.tsx, loading.tsx
+
+Any .tsx file with PROJECT-SPECIFIC content (hero section, features grid, custom pages) = separate `feat:` commit. One per component/page.
+
+**Audit lesson:** Session 1 scaffold commit had 51 files including hero, features grid, and testimonials — that's 3 features smuggled into scaffold.
+
 **TentaGen lesson:** "comprehensive library improvements - full tag display, inline editing, selection system, export functionality, delete capability" = 5 features in 1 commit.
 
 ### HARD STOP 4: Research Before New Library
@@ -56,26 +67,56 @@ If you skip this → you WILL spiral. This is not optional.
 
 **TentaGen lesson:** pdfjs-dist doesn't work in serverless. A 30-second Ref MCP check would have revealed this before the 3-day spiral.
 
-### HARD STOP 5: Prove It Works (No Declarations Without Evidence)
-**BEFORE writing "done", "working", "complete", "fixed" in any file (TASKS.md, SESSION-SUMMARY.md, commit message):**
-1. Navigate to the page with Playwright: `browser_navigate`
-2. Test the feature end-to-end: click, type, upload, submit
-3. Check console: `browser_console_messages` — must be zero errors
-4. Test what user does NEXT after using the feature
+### HARD STOP 5: Prove It Works (TESTED.md Artifact Required)
+**The word "done" is BANNED.** Use ONLY: "tested-pass", "tested-fail", or "untested".
 
-If you haven't run these 4 commands → you CANNOT write "done". Write "untested" instead.
+**AFTER building each feature, BEFORE committing:**
+1. Start dev server if not running: `npm run dev`
+2. Navigate to the feature's page: `browser_navigate` to `http://localhost:3000/[path]`
+3. Test the feature end-to-end: click, type, upload, submit
+4. Check console: `browser_console_messages` — must be zero errors
+5. Test what user does NEXT after using the feature
+6. **⛔ WRITE to TESTED.md** — append one line per feature:
+```
+| Feature | URL | Console Errors | User Flow | Status |
+| [name] | /[path] | 0 | [what you tested] | PASS/FAIL |
+```
 
-**TentaGen lesson:** Features were declared "working" without testing. User was the one finding broken things.
+**If you haven't written to TESTED.md → you CANNOT commit the feature.**
+**If TESTED.md doesn't exist when you write SESSION-SUMMARY.md → you violated HARD STOP 5.**
 
-### HARD STOP 6: Context Window Awareness
-**After every 5th feature commit:**
+**SESSION-SUMMARY.md feature status uses ONLY these values:**
+- `tested-pass` — Playwright tested, console clean, user flow works
+- `tested-fail` — Playwright tested, found issues (describe them)
+- `untested` — No Playwright test was run (be honest)
+
+**Audit lesson:** Session 1 scored 3/10 on testing. Agent marked all features "done" with ZERO Playwright tests. TESTED.md artifact makes testing visible and auditable.
+
+### HARD STOP 6: Context Window Awareness (PROGRESS.md Required)
+**PROGRESS.md is MANDATORY after features #3, #6, #9, #12, #15.**
+
+**At each checkpoint:**
 1. Run: `git log --oneline -30`
 2. Count: how many features built vs how many in TASKS.md
 3. Update TASKS.md with accurate status from git log (not memory)
-4. Write PROGRESS.md: "Features done: [list from git]. Features remaining: [list from TASKS.md]"
+4. Create/update PROGRESS.md with this EXACT format:
+```
+# PROGRESS — [date]
+## Built (from git log, not memory)
+- feat: [name] — [commit hash]
+- feat: [name] — [commit hash]
+## Remaining (from TASKS.md)
+- [ ] [task name]
+## Stats
+- Features committed: [N]
+- Fix commits: [N]
+- Files over 200 lines: [list or "none"]
+```
+5. Commit PROGRESS.md: `docs: update progress checkpoint`
 
-If you skip this → you WILL lose track and either rebuild existing features or skip needed ones.
+**If PROGRESS.md does not exist after 6 feat: commits → you are violating HARD STOP 6.**
 
+**Audit lesson:** Session 1 never created PROGRESS.md. Agent lost context awareness.
 **TentaGen lesson:** After context compaction, 7 shipped features were presented as "remaining work."
 
 ### HARD STOP 7: Design Lock
@@ -168,12 +209,17 @@ When starting this project, spend real time brainstorming before coding:
 - Set up payment processing (Stripe, etc.)
 
 ## When You're Done
-Write SESSION-SUMMARY.md with:
+**⛔ BEFORE writing SESSION-SUMMARY.md, verify these artifacts exist:**
+1. TESTED.md — with at least one entry per feature (HARD STOP 5)
+2. PROGRESS.md — if 3+ features were built (HARD STOP 6)
+3. DECISIONS.md — with at least one entry per library choice (HARD STOP 4)
+
+**Then write SESSION-SUMMARY.md with:**
 - What you brainstormed and decided
-- What you built (feature list with status — only "done" if Playwright-tested)
-- What's working on localhost (with Playwright proof)
+- What you built — feature list using ONLY these statuses: `tested-pass`, `tested-fail`, `untested`
+- TESTED.md summary: "X features tested-pass, Y tested-fail, Z untested"
 - What needs human setup (credentials, accounts)
-- HARD STOP violations encountered (be honest)
+- HARD STOP violations encountered (be honest — count each one)
 - Suggested next session priorities
 - Any decisions you want the human to review
 

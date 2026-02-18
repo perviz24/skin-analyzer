@@ -43,7 +43,8 @@ fi
 # ============================================
 # If this is a fix commit, check how many recent fixes exist
 if echo "$MSG" | grep -q "^fix:"; then
-    FIX_COUNT=$(git log --oneline -15 2>/dev/null | grep -c "fix:" || echo "0")
+    FIX_COUNT=$(git log --oneline -15 2>/dev/null | grep -c "fix:" 2>/dev/null || true)
+    FIX_COUNT=${FIX_COUNT:-0}
 
     if [ "$FIX_COUNT" -ge 4 ]; then
         echo ""

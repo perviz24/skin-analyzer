@@ -33,7 +33,8 @@ else
 fi
 
 # Count recent fix commits (last 20)
-FIX_COUNT=$(git log --oneline -20 2>/dev/null | grep -c "fix:" || echo "0")
+FIX_COUNT=$(git log --oneline -20 2>/dev/null | grep -c "fix:" 2>/dev/null || true)
+FIX_COUNT=${FIX_COUNT:-0}
 if [ "$FIX_COUNT" -ge 4 ]; then
     echo ""
     echo "⚠️  WARNING: $FIX_COUNT fix commits in last 20. You may be spiraling."
@@ -43,7 +44,56 @@ if [ "$FIX_COUNT" -ge 4 ]; then
 fi
 
 # ============================================
-# CHECK 3: No secrets in committed files
+# CHECK 3: TESTED.md artifact enforcement
+# ============================================
+# After 3+ feat: commits, warn if no TESTED.md
+# After 5+ feat: commits, BLOCK if no TESTED.md
+FEAT_COUNT=$(git log --oneline -30 2>/dev/null | grep -c "^[a-f0-9]* feat:" 2>/dev/null || true)
+FEAT_COUNT=${FEAT_COUNT:-0}
+
+if [ "$FEAT_COUNT" -ge 5 ]; then
+    if [ ! -f "TESTED.md" ]; then
+        echo ""
+        echo "⛔ BLOCKED: $FEAT_COUNT features committed but TESTED.md does not exist."
+        echo "   HARD STOP 5 requires Playwright testing after each feature."
+        echo "   Create TESTED.md with test results before committing more features."
+        echo ""
+        BLOCKED=1
+    fi
+elif [ "$FEAT_COUNT" -ge 3 ]; then
+    if [ ! -f "TESTED.md" ]; then
+        echo ""
+        echo "⚠️  WARNING: $FEAT_COUNT features committed but no TESTED.md yet."
+        echo "   HARD STOP 5: Test with Playwright and log results in TESTED.md."
+        echo "   At 5 features, this becomes a BLOCK."
+        echo ""
+    fi
+fi
+
+# ============================================
+# CHECK 4: PROGRESS.md checkpoint enforcement
+# ============================================
+# After 6+ feat: commits, BLOCK if no PROGRESS.md
+if [ "$FEAT_COUNT" -ge 6 ]; then
+    if [ ! -f "PROGRESS.md" ]; then
+        echo ""
+        echo "⛔ BLOCKED: $FEAT_COUNT features committed but PROGRESS.md does not exist."
+        echo "   HARD STOP 6 requires PROGRESS.md after features #3, #6, #9, #12, #15."
+        echo "   Run git log, update TASKS.md from facts, write PROGRESS.md."
+        echo ""
+        BLOCKED=1
+    fi
+elif [ "$FEAT_COUNT" -ge 3 ]; then
+    if [ ! -f "PROGRESS.md" ]; then
+        echo ""
+        echo "⚠️  WARNING: $FEAT_COUNT features committed but no PROGRESS.md yet."
+        echo "   HARD STOP 6: Create PROGRESS.md before feature #6."
+        echo ""
+    fi
+fi
+
+# ============================================
+# CHECK 5: No secrets in committed files
 # ============================================
 for file in $(git diff --cached --name-only --diff-filter=ACM); do
     if [ -f "$file" ]; then
@@ -56,7 +106,7 @@ for file in $(git diff --cached --name-only --diff-filter=ACM); do
 done
 
 # ============================================
-# CHECK 4: No .env files committed
+# CHECK 6: No .env files committed
 # ============================================
 for file in $(git diff --cached --name-only); do
     if echo "$file" | grep -qE '\.env(\.local|\.production)?$'; then
