@@ -3,12 +3,14 @@
 import { useState } from "react";
 import { PhotoCapture } from "@/components/analyze/photo-capture";
 import { PhotoPreview } from "@/components/analyze/photo-preview";
+import { AnalyzingOverlay } from "@/components/analyze/analyzing-overlay";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default function AnalyzeraPage() {
   const [photo, setPhoto] = useState<string | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   function handleCapture(base64: string) {
     setPhoto(base64);
@@ -16,6 +18,14 @@ export default function AnalyzeraPage() {
 
   function handleRetake() {
     setPhoto(null);
+  }
+
+  if (isAnalyzing) {
+    return (
+      <div className="mx-auto max-w-lg px-4 py-8">
+        <AnalyzingOverlay />
+      </div>
+    );
   }
 
   return (
@@ -42,6 +52,7 @@ export default function AnalyzeraPage() {
         <PhotoPreview
           photo={photo}
           onRetake={handleRetake}
+          onAnalyzingChange={setIsAnalyzing}
         />
       ) : (
         <PhotoCapture onCapture={handleCapture} />

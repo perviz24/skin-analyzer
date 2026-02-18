@@ -11,12 +11,18 @@ import { toast } from "sonner";
 interface PhotoPreviewProps {
   photo: string;
   onRetake: () => void;
+  onAnalyzingChange?: (analyzing: boolean) => void;
 }
 
-export function PhotoPreview({ photo, onRetake }: PhotoPreviewProps) {
+export function PhotoPreview({ photo, onRetake, onAnalyzingChange }: PhotoPreviewProps) {
   const router = useRouter();
   const [consent, setConsent] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  function setAnalyzing(value: boolean) {
+    setIsAnalyzing(value);
+    onAnalyzingChange?.(value);
+  }
 
   async function handleAnalyze() {
     if (!consent) {
@@ -24,7 +30,7 @@ export function PhotoPreview({ photo, onRetake }: PhotoPreviewProps) {
       return;
     }
 
-    setIsAnalyzing(true);
+    setAnalyzing(true);
 
     try {
       const res = await fetch("/api/analyze", {
@@ -47,7 +53,7 @@ export function PhotoPreview({ photo, onRetake }: PhotoPreviewProps) {
       const message =
         err instanceof Error ? err.message : "Något gick fel. Försök igen.";
       toast.error(message);
-      setIsAnalyzing(false);
+      setAnalyzing(false);
     }
   }
 
