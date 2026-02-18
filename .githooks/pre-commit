@@ -1,0 +1,74 @@
+#!/bin/bash
+# PRE-COMMIT HOOK — Mechanical enforcement of build rules
+# Runs automatically before every commit. Agent cannot bypass this.
+# Install: git config core.hooksPath .githooks
+
+BLOCKED=0
+
+# ============================================
+# CHECK 1: File size limit (max 300 lines)
+# ============================================
+# TentaGen lesson: 11 files exceeded 300 lines, worst at 1,735
+for file in $(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(tsx?|jsx?|ts|js)$'); do
+    if [ -f "$file" ]; then
+        lines=$(wc -l < "$file")
+        if [ "$lines" -gt 300 ]; then
+            echo "⛔ BLOCKED: $file has $lines lines (max 300). Split it before committing."
+            BLOCKED=1
+        fi
+    fi
+done
+
+# ============================================
+# CHECK 2: Fix spiral detection (max 3 fixes on same area)
+# ============================================
+# TentaGen lesson: PDF had 10 fix commits, video had 12, export had 15+
+# Check if this is a fix commit by looking at the staged commit message
+COMMIT_MSG_FILE=".git/COMMIT_EDITMSG"
+if [ -f "$COMMIT_MSG_FILE" ]; then
+    MSG=$(head -1 "$COMMIT_MSG_FILE")
+else
+    # For commits with -m flag, we check in commit-msg hook instead
+    MSG=""
+fi
+
+# Count recent fix commits (last 20)
+FIX_COUNT=$(git log --oneline -20 2>/dev/null | grep -c "fix:" || echo "0")
+if [ "$FIX_COUNT" -ge 4 ]; then
+    echo ""
+    echo "⚠️  WARNING: $FIX_COUNT fix commits in last 20. You may be spiraling."
+    echo "   Consider: disable the broken feature, log in BUGS.md, move on."
+    echo ""
+    # Warning only at 4, not blocking — the commit-msg hook handles the hard block
+fi
+
+# ============================================
+# CHECK 3: No secrets in committed files
+# ============================================
+for file in $(git diff --cached --name-only --diff-filter=ACM); do
+    if [ -f "$file" ]; then
+        # Check for common secret patterns
+        if grep -qE '(sk-[a-zA-Z0-9]{20,}|AKIA[A-Z0-9]{16}|ghp_[a-zA-Z0-9]{36})' "$file" 2>/dev/null; then
+            echo "⛔ BLOCKED: $file appears to contain an API key or secret. Remove it before committing."
+            BLOCKED=1
+        fi
+    fi
+done
+
+# ============================================
+# CHECK 4: No .env files committed
+# ============================================
+for file in $(git diff --cached --name-only); do
+    if echo "$file" | grep -qE '\.env(\.local|\.production)?$'; then
+        echo "⛔ BLOCKED: $file is an environment file. Add it to .gitignore."
+        BLOCKED=1
+    fi
+done
+
+if [ "$BLOCKED" -eq 1 ]; then
+    echo ""
+    echo "Commit blocked. Fix the issues above and try again."
+    exit 1
+fi
+
+exit 0

@@ -1,0 +1,83 @@
+#!/bin/bash
+# COMMIT-MSG HOOK — Enforces commit message discipline
+# Runs automatically after writing commit message, before commit finalizes.
+
+MSG=$(head -1 "$1")
+BLOCKED=0
+
+# ============================================
+# CHECK 1: Feature batching detection
+# ============================================
+# TentaGen lesson: "comprehensive library improvements - full tag display, inline editing,
+# selection system, export functionality, delete capability" = 5 features in 1 commit
+
+# Block messages longer than 72 characters (almost always batching)
+MSG_LEN=${#MSG}
+if [ "$MSG_LEN" -gt 72 ]; then
+    echo "⛔ BLOCKED: Commit message is $MSG_LEN chars (max 72). You're likely batching features."
+    echo "   Split into separate commits, each describing ONE thing in 3-7 words."
+    BLOCKED=1
+fi
+
+# Block messages containing feature-listing patterns
+if echo "$MSG" | grep -qiE '\band\b.*\band\b'; then
+    echo "⛔ BLOCKED: Message contains multiple 'and's — this is feature batching."
+    BLOCKED=1
+fi
+
+# Block comma-separated feature lists (3+ items separated by commas)
+COMMA_COUNT=$(echo "$MSG" | tr -cd ',' | wc -c)
+if [ "$COMMA_COUNT" -ge 2 ]; then
+    echo "⛔ BLOCKED: Message has $COMMA_COUNT commas — looks like a feature list. One feature per commit."
+    BLOCKED=1
+fi
+
+# Block known batching words
+if echo "$MSG" | grep -qiE '(comprehensive|various|multiple improvements|several fixes)'; then
+    echo "⛔ BLOCKED: Words like 'comprehensive/various/multiple' signal batching. One feature per commit."
+    BLOCKED=1
+fi
+
+# ============================================
+# CHECK 2: Fix spiral hard stop
+# ============================================
+# If this is a fix commit, check how many recent fixes exist
+if echo "$MSG" | grep -q "^fix:"; then
+    FIX_COUNT=$(git log --oneline -15 2>/dev/null | grep -c "fix:" || echo "0")
+
+    if [ "$FIX_COUNT" -ge 4 ]; then
+        echo ""
+        echo "⛔ BLOCKED: This would be fix commit #$((FIX_COUNT + 1)) in recent history."
+        echo ""
+        echo "   You are in a fix spiral. TentaGen had 10-15 fix commits per spiral."
+        echo "   REQUIRED: Disable the broken feature with a 'Coming soon' message."
+        echo "   Log the issue in BUGS.md. Move to the next task."
+        echo ""
+        echo "   To force this commit anyway (emergency only):"
+        echo "   git commit --no-verify -m \"$MSG\""
+        echo ""
+        BLOCKED=1
+    elif [ "$FIX_COUNT" -ge 2 ]; then
+        echo ""
+        echo "⚠️  WARNING: This is fix commit #$((FIX_COUNT + 1)) in this area."
+        echo "   At fix #5, this commit will be BLOCKED."
+        echo "   Consider: use Sequential Thinking MCP to rethink the approach."
+        echo ""
+    fi
+fi
+
+# ============================================
+# CHECK 3: Require prefix
+# ============================================
+if ! echo "$MSG" | grep -qE '^(feat|fix|refactor|style|docs|chore|perf|test|scaffold):'; then
+    echo "⛔ BLOCKED: Commit message must start with a prefix (feat:, fix:, refactor:, style:, etc.)"
+    BLOCKED=1
+fi
+
+if [ "$BLOCKED" -eq 1 ]; then
+    echo ""
+    echo "Commit blocked. Fix the message and try again."
+    exit 1
+fi
+
+exit 0
