@@ -10,3 +10,4 @@
 | Disclaimer page | /information | 0 | Medical warning, can/can't lists, clinic links, back nav | PASS |
 | Footer legal links | / (footer) | 0 | Integritetspolicy → /integritet, Viktig information → /information, consent links to /integritet | PASS |
 | Dark mode toggle | / | 0 | Moon icon → click → dark mode + sun icon → click → light mode, label changes correctly | PASS |
+| Mobile navigation | / (375px) | 0 | Hamburger visible on mobile, sheet opens with 4 nav links + theme toggle, links navigate, close works | PASS |

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Sparkles } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { MobileNav } from "@/components/layout/mobile-nav";
 
 export function Header() {
   return (
@@ -14,10 +15,10 @@ export function Header() {
             Hudanalys
           </span>
         </Link>
-        <nav className="flex items-center gap-4">
+        <nav className="hidden sm:flex items-center gap-4">
           <Link
             href="/#hur-det-fungerar"
-            className="hidden sm:inline text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             Hur det fungerar
           </Link>
@@ -29,6 +30,15 @@ export function Header() {
           </Link>
           <ThemeToggle />
         </nav>
+        <div className="flex sm:hidden items-center gap-2">
+          <Link
+            href="/analysera"
+            className="rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            Analysera
+          </Link>
+          <MobileNav />
+        </div>
       </div>
     </header>
   );
