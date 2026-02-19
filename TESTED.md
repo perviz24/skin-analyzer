@@ -14,3 +14,4 @@
 | Smooth scroll | / → /#hur-det-fungerar | 0 | Click "Hur det fungerar" link → page scrolls to section, URL updates to hash, header offset correct | PASS |
 | SEO robots.txt | /robots.txt | 0 | Serves correctly, allows /, disallows /api/ and /resultat/, links sitemap | PASS |
 | SEO sitemap.xml | /sitemap.xml | 0 | 4 URLs generated: /, /analysera, /integritet, /information with correct priorities | PASS |
+| Image compression | /analysera | 0 | Upload test-image.png → compressed via canvas → preview shows, consent checkbox + analyze button appear | PASS |

@@ -4,6 +4,7 @@ import { useRef, useState, useCallback } from "react";
 import { Camera, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { compressImage } from "@/lib/compress-image";
 
 interface PhotoCaptureProps {
   onCapture: (base64: string) => void;
@@ -63,7 +64,7 @@ export function PhotoCapture({ onCapture }: PhotoCaptureProps) {
     onCapture(base64);
   }
 
-  function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -77,14 +78,12 @@ export function PhotoCapture({ onCapture }: PhotoCaptureProps) {
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result;
-      if (typeof result === "string") {
-        onCapture(result);
-      }
-    };
-    reader.readAsDataURL(file);
+    try {
+      const compressed = await compressImage(file);
+      onCapture(compressed);
+    } catch {
+      setCameraError("Kunde inte läsa bilden. Försök med en annan fil.");
+    }
 
     // Reset input so same file can be selected again
     e.target.value = "";
