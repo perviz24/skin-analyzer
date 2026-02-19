@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Sparkles } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function Header() {
   return (
@@ -13,10 +14,10 @@ export function Header() {
             Hudanalys
           </span>
         </Link>
-        <nav className="flex items-center gap-6">
+        <nav className="flex items-center gap-4">
           <Link
             href="/#hur-det-fungerar"
-            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className="hidden sm:inline text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             Hur det fungerar
           </Link>
@@ -26,6 +27,7 @@ export function Header() {
           >
             Analysera
           </Link>
+          <ThemeToggle />
         </nav>
       </div>
     </header>

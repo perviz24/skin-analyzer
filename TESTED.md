@@ -9,3 +9,4 @@
 | Privacy policy | /integritet | 0 | 8 GDPR sections rendered, back nav to home works | PASS |
 | Disclaimer page | /information | 0 | Medical warning, can/can't lists, clinic links, back nav | PASS |
 | Footer legal links | / (footer) | 0 | Integritetspolicy → /integritet, Viktig information → /information, consent links to /integritet | PASS |
+| Dark mode toggle | / | 0 | Moon icon → click → dark mode + sun icon → click → light mode, label changes correctly | PASS |

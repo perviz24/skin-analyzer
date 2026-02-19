@@ -64,3 +64,8 @@ Every non-trivial decision is logged here with reasoning.
 **Choice**: Return realistic mock analysis data when ANTHROPIC_API_KEY is not set
 **Why**: Unblocks full-flow testing without credentials. User can see the complete UI working before setting up API key. Includes 2s simulated delay for realistic UX. Demo banner clearly shows this is example data.
 **No new libraries needed**: Uses existing types and mock data in src/lib/mock-analysis.ts
+
+## D13: next-themes for Dark Mode
+**Choice**: next-themes library with class attribute strategy
+**Why**: De facto standard for Next.js dark mode. Handles SSR hydration, system preference, localStorage persistence. Tailwind v4 already had dark mode CSS variables configured in globals.css. Zero custom code needed for theme persistence.
+**Verified**: Ref MCP confirmed current API (ThemeProvider, useTheme hook, attribute="class")
