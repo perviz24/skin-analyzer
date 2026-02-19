@@ -23,16 +23,19 @@
 - feat: add mobile navigation menu — 8898767
 - feat: add smooth scroll behavior — dbe3761
 - feat: add SEO files — 5e10205
+- feat: add image compression before upload — 6f208f8
+- feat: add request timeout and error handling — dcaa833
+- feat: add custom SVG favicon — d481941
+- docs: mobile responsive audit passed (all pages 8.5+/10) — 474e61d
 
 ## Remaining
-- [ ] OG metadata / social sharing image
-- [ ] Image compression before upload
-- [ ] Error handling for API failures
-- [ ] Mobile responsive audit
 - [ ] T8: Convex setup (blocked — needs human action)
-- [ ] T13: Photo overlay markers (deferred)
+- [ ] T13: Photo overlay markers (deferred to Phase 2)
+- [ ] OG social sharing image (nice-to-have)
+- [ ] Analytics (Vercel Analytics + Speed Insights)
+- [ ] Deployment to Vercel
 
 ## Stats
-- Features committed: 8 (session 1) + 4 (session 2) + 3 (session 3)
+- Features committed: 8 (session 1) + 4 (session 2) + 7 (session 3)
 - Fix commits: 2 (session 2, hook enforcement)
 - Files over 200 lines: none

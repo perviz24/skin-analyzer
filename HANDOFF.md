@@ -1,73 +1,42 @@
 # HANDOFF — Skin Analyzer (RelyOn Beauty Clinic)
-Generated: 2026-02-18
+Generated: 2026-02-19 (Session 3)
 
 ## What Was Built This Session
-- **Scaffold**: Next.js 16 + React 19 + TS + Tailwind v4 + shadcn/ui (New York/Zinc) — working
-- **Landing page**: Hero, how-it-works, trust-badges, footer with RelyOn branding — working
-- **Upload page** (`/analysera`): Camera selfie + file upload, photo preview, GDPR consent — working
-- **AI Analysis API** (`/api/analyze`): Claude Sonnet 4.5 Vision via Vercel AI SDK `generateObject` — needs API key
-- **Score card component**: Animated circle, color-coded score, skin age, positives — working
-- **Findings list component**: Severity badges (Mild/Måttlig/Märkbar), area labels — working
-- **Treatment recommendations**: Priority sorting, bokadirekt.se booking links, 9 treatments mapped — working
-- **Results page** (`/resultat/[id]`): Composes all result components, share button, CTA — working (sessionStorage)
-- **Analyzing overlay**: Animated Swedish progress steps with dots — working
-- **Per-page metadata**: SEO titles/descriptions for /analysera and /resultat — working
+- **Mobile navigation menu**: Hamburger menu with Sheet panel, 4 nav links + theme toggle — tested-pass
+- **Smooth scroll**: CSS scroll-behavior for anchor links with header offset — tested-pass
+- **SEO files**: robots.txt + dynamic sitemap.ts (4 URLs) — tested-pass
+- **Image compression**: Canvas-based resize (max 1280px, JPEG 0.85) before upload — tested-pass
+- **Error handling**: 30s AbortController timeout + offline detection on API calls — tested-pass
+- **Custom favicon**: SVG sparkles icon in copper brand color — tested-pass
+- **Mobile audit**: All pages scored 8.5+/10 at 375px — tested-pass
 
 ## Current State
 - Live URL: **Not deployed yet** (needs Convex + API key + Vercel setup)
-- Last commit: `a9f30d5` — per-page metadata layouts
-- Dev server: stopped (restart with `npm run dev` in project dir)
+- Last commit: `d481941` — add custom SVG favicon
+- Dev server: running on localhost:3000
 - Known issues:
-  - `nul` file in root — Windows reserved device name phantom, gitignored, harmless
-  - Convex not configured yet — excluded from tsconfig, schema/seed files ready
-  - No ANTHROPIC_API_KEY set — API route will 500 without it
-  - Results stored in sessionStorage (volatile) — will move to Convex when configured
+  - Next.js warning about `scroll-behavior: smooth` (non-blocking, works fine)
+  - Convex not configured yet — schema/seed files ready
+  - No ANTHROPIC_API_KEY — demo mode works with mock data
+  - Results in sessionStorage (volatile) — will move to Convex
 
 ## Next Steps (priority order)
 1. **Set up Convex**: `npx convex dev --configure new --team pervz --project skin-analyzer --once`
-2. **Add ANTHROPIC_API_KEY** to `.env.local`: `ANTHROPIC_API_KEY=sk-ant-...`
-3. **Test full flow**: Upload photo → analyze → see results on localhost
-4. **Wire Convex storage**: Replace sessionStorage with Convex mutations for persistent results
-5. **Seed treatments data**: Run Convex seed function to populate treatments table
-6. **Deploy to Vercel**: Set env vars, `vercel --prod --force --yes`
-7. **Polish**: Dark mode audit, mobile responsive check, error states for API failures
+2. **Add ANTHROPIC_API_KEY** to `.env.local`
+3. **Test full AI flow**: Upload real photo → get real analysis
+4. **Wire Convex storage**: Replace sessionStorage with Convex mutations
+5. **Deploy to Vercel**: Set env vars, run pre-deploy checklist
+6. **Phase 2**: Photo overlay markers (T13), analytics, OG sharing image
 
 ## Key Architecture Decisions
-- **No database yet**: Using sessionStorage so the full UI flow works before Convex is configured
-- **Claude Sonnet 4.5 for analysis**: Via `generateObject` with Zod schema for structured output
-- **Swedish-only**: All UI text in Swedish, AI system prompt requests Swedish responses
-- **Base64 image transfer**: Photo captured as base64 data URL, sent directly to API route
-- **Treatment mapping**: 9 RelyOn treatments hardcoded with bokadirekt.se booking URLs
-- **Warm copper theme**: Primary color #C36226 (oklch), matches RelyOn clinic branding
-- **GDPR consent**: Required checkbox before analysis, photo not stored
+- **Base64 via Canvas**: Images compressed client-side before API call
+- **Demo mode**: Returns mock data when ANTHROPIC_API_KEY not set
+- **30s timeout**: AbortController on fetch to prevent indefinite loading
+- **SVG favicon**: Inline SVG in src/app/icon.svg, auto-detected by Next.js
+- **CSS smooth scroll**: Using scroll-behavior + scroll-padding-top (not JS)
 
 ## Environment & Credentials
 - **Missing**: `ANTHROPIC_API_KEY` (needed for AI analysis)
-- **Missing**: Convex deployment URL (run `npx convex dev` to generate)
+- **Missing**: Convex deployment URL
 - **Set**: Git remote → https://github.com/perviz24/skin-analyzer
-- **File**: `SETUP-NEEDED.md` has step-by-step instructions for human setup tasks
-
-## File Structure
-```
-src/app/
-  page.tsx                    — Landing page
-  layout.tsx                  — Root layout (header + footer)
-  analysera/page.tsx          — Upload/capture page
-  resultat/[id]/page.tsx      — Results page
-  api/analyze/route.ts        — AI analysis endpoint
-  error.tsx, not-found.tsx, loading.tsx — Error boundaries
-
-src/components/
-  analyze/photo-capture.tsx   — Camera + file upload
-  analyze/photo-preview.tsx   — Preview + consent + submit
-  analyze/analyzing-overlay.tsx — Loading animation
-  results/score-card.tsx      — Score circle + summary
-  results/findings-list.tsx   — Findings with severity
-  results/treatment-recommendations.tsx — Treatment cards
-  landing/hero.tsx, how-it-works.tsx, trust-badges.tsx
-  layout/header.tsx, footer.tsx
-
-src/lib/types.ts              — Shared TypeScript interfaces
-convex/schema.ts              — Database schema (not active yet)
-convex/treatments.ts          — Treatment seed data
-```
+- **File**: `SETUP-NEEDED.md` has step-by-step instructions
