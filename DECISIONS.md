@@ -59,3 +59,8 @@ Every non-trivial decision is logged here with reasoning.
 **Choice**: Geist (Vercel's font) for both headings and body
 **Why**: Modern, clean, excellent readability. Ships with Next.js. Montserrat (RelyOn's font) is overused and doesn't feel premium.
 **Trade-off**: Slight disconnect from RelyOn's current branding. Acceptable — the app should feel premium, not match their WordPress theme.
+
+## D12: Demo Mode When API Key Missing
+**Choice**: Return realistic mock analysis data when ANTHROPIC_API_KEY is not set
+**Why**: Unblocks full-flow testing without credentials. User can see the complete UI working before setting up API key. Includes 2s simulated delay for realistic UX. Demo banner clearly shows this is example data.
+**No new libraries needed**: Uses existing types and mock data in src/lib/mock-analysis.ts

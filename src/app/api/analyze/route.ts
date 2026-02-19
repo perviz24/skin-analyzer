@@ -2,6 +2,7 @@ import { generateObject } from "ai";
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { z } from "zod";
 import { NextResponse } from "next/server";
+import { MOCK_ANALYSIS } from "@/lib/mock-analysis";
 
 const anthropic = createAnthropic({
   apiKey: process.env.ANTHROPIC_API_KEY ?? "",
@@ -104,11 +105,17 @@ export async function POST(req: Request) {
       );
     }
 
+    // Demo mode: return mock data when API key is not configured
     if (!process.env.ANTHROPIC_API_KEY) {
-      return NextResponse.json(
-        { error: "API-nyckel saknas. Kontakta administratören." },
-        { status: 500 }
-      );
+      const id = crypto.randomUUID();
+      // Simulate network delay for realistic UX
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      return NextResponse.json({
+        id,
+        ...MOCK_ANALYSIS,
+        isDemo: true,
+        createdAt: Date.now(),
+      });
     }
 
     // Strip data URL prefix if present, keep raw base64

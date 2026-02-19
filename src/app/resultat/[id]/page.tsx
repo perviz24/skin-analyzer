@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Camera, Share2 } from "lucide-react";
+import { ArrowLeft, Camera, Share2, FlaskConical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
@@ -93,6 +93,16 @@ export default function ResultatPage() {
       </h1>
 
       <div className="space-y-6">
+        {/* Demo mode banner */}
+        {result.isDemo && (
+          <div className="flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-950/30">
+            <FlaskConical className="h-5 w-5 flex-shrink-0 text-amber-600 dark:text-amber-400" />
+            <p className="text-sm text-amber-800 dark:text-amber-300">
+              <span className="font-medium">Demoläge</span> — detta är
+              exempeldata. Anslut en AI-nyckel för riktiga analyser.
+            </p>
+          </div>
+        )}
         {/* Score card with summary and positives */}
         <ScoreCard
           overallScore={result.overallScore}

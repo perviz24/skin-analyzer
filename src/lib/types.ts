@@ -21,4 +21,5 @@ export interface SkinAnalysisResult {
   findings: SkinFinding[];
   recommendations: TreatmentRecommendation[];
   createdAt: number;
+  isDemo?: boolean;
 }
