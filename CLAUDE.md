@@ -176,28 +176,47 @@ Do NOT push past 15 features. Quality degrades. Start a new session.
 11. After 15 features: HARD STOP 8 (session end)
 12. Write SESSION-SUMMARY.md
 
-## Brainstorming Rules (Phase 1 — Think Like a Product Designer)
-When starting this project, spend real time brainstorming before coding:
+## ⛔ BRAINSTORMING RULES (Phase 1 — MANDATORY Deep Thinking)
+Brainstorming is NOT a quick outline. It is the most important phase. Spend REAL intellectual effort here.
 
-1. Think about the END USER (clinic customer uploading a photo):
-   - What are they hoping to learn?
-   - What would make them book a treatment?
-   - What would make them trust the analysis?
-   - What's the emotional journey: upload → results → action?
+### Step 1: Sequential Thinking MCP (MANDATORY — minimum 10 thought steps)
+Use `mcp__sequential-thinking__sequentialthinking` with at least 10 thoughts to explore:
+- What problem does this REALLY solve? (not just the surface request)
+- Who are ALL the stakeholders? What does each one need?
+- What are 3 fundamentally different approaches to this product?
+- What could go WRONG? (edge cases, abuse, legal, UX dead ends)
+- What's the simplest version that delivers real value?
 
-2. Think about the CLINIC OWNER (relyonclinic.se and future clients):
-   - What services/products do they want to upsell?
-   - How does this integrate with their existing website?
-   - What data would they want to see (analytics, popular concerns, conversion)?
-   - What customization do they need (their own services, pricing, branding)?
+### Step 2: Competitive Research (MANDATORY — minimum 2 competitors)
+Use Firecrawl or Exa to research 2-3 existing products in the same space:
+- What do they do well? What's their UX flow?
+- What do they do poorly? What's the opportunity?
+- What features do they have that we should NOT copy (bloat)?
+Write findings to BRAINSTORM.md under "## Competitive Analysis"
 
-3. Think about the BUSINESS MODEL (SaaS for clinics):
-   - What makes this sellable to other clinics?
-   - What needs to be configurable vs hardcoded?
-   - White-label considerations from day one
+### Step 3: Stakeholder Deep Dive
+For EACH stakeholder (end user, business owner, future customers):
+- What are they hoping to achieve?
+- What would make them trust this product?
+- What would make them leave / not convert?
+- What's their emotional journey through the app?
 
-4. Write your brainstorm findings to BRAINSTORM.md before creating TASKS.md
-5. Debate with yourself: write PROS/CONS for key architecture decisions in DECISIONS.md
+### Step 4: Architecture Debate (minimum 2 approaches)
+Before picking a technical approach, write in DECISIONS.md:
+- **Approach A**: [description] — PROS: [...] CONS: [...]
+- **Approach B**: [description] — PROS: [...] CONS: [...]
+- **Chosen**: [which and WHY]
+Do this for at least: data storage, AI integration, and core UX flow.
+
+### Step 5: Write Artifacts
+- BRAINSTORM.md — full brainstorm including competitive analysis
+- ARCHITECTURE.md — technical design with component tree
+- DESIGN-TOKENS.md — locked visual choices (HARD STOP 7)
+- DECISIONS.md — every choice with PROS/CONS and WHY
+
+### ⛔ BRAINSTORM GATE: Do NOT create TASKS.md until ALL 5 steps are complete.
+If BRAINSTORM.md has no "## Competitive Analysis" section → you skipped Step 2.
+If DECISIONS.md has no PROS/CONS entries → you skipped Step 4.
 
 ## What You CAN Do Autonomously
 - All implementation decisions (frameworks, libraries, component structure)

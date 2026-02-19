@@ -122,13 +122,18 @@ If a hook blocks your commit, fix the issue — do NOT bypass with --no-verify.
 
 WORKFLOW:
 Step 1: Read all instruction files (CLAUDE.md x2 + PROJECT.md)
-Step 2: Use Sequential Thinking MCP to brainstorm the product deeply
-Step 3: Scrape relyonclinic.se with Firecrawl for services, products, branding
-Step 4: Write BRAINSTORM.md, ARCHITECTURE.md, DESIGN-TOKENS.md, DECISIONS.md
-Step 5: Write TASKS.md with sequential build tasks (MVP first)
-Step 6: Scaffold the project (create-next-app, shadcn, packages)
-Step 7: Build features one at a time — obey ALL hard stops
-Step 8: Write SESSION-SUMMARY.md when done or at 15 features
+Step 2: ⛔ DEEP BRAINSTORM (do NOT rush this — it's the most important step):
+  2a. Sequential Thinking MCP with MINIMUM 10 thought steps — explore the problem deeply
+  2b. Research 2-3 competitor products with Firecrawl/Exa — what exists, what's good/bad
+  2c. For each stakeholder: map their goals, fears, emotional journey
+  2d. Debate 2+ technical approaches in DECISIONS.md with PROS/CONS before picking one
+  2e. Write BRAINSTORM.md (MUST include "## Competitive Analysis" section)
+Step 3: Write ARCHITECTURE.md, DESIGN-TOKENS.md, DECISIONS.md (with PROS/CONS)
+Step 4: Write TASKS.md with sequential build tasks (MVP first)
+  ⛔ GATE: Do NOT create TASKS.md until BRAINSTORM.md has competitive analysis and DECISIONS.md has PROS/CONS
+Step 5: Scaffold the project (create-next-app, shadcn, packages)
+Step 6: Build features one at a time — obey ALL hard stops
+Step 7: Write SESSION-SUMMARY.md when done or at 15 features
 
 AUTONOMY: Make all decisions. Log credentials needed in SETUP-NEEDED.md. Do NOT deploy. Do NOT ask questions.
 
