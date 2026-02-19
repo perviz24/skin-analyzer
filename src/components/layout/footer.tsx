@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 
 export function Footer() {
@@ -29,16 +30,30 @@ export function Footer() {
           </div>
         </div>
         <Separator className="my-6" />
-        <div className="flex flex-col items-center justify-between gap-2 text-xs text-muted-foreground md:flex-row">
+        <div className="flex flex-col items-center justify-between gap-4 text-xs text-muted-foreground md:flex-row">
           <p>
             Denna analys är inte en medicinsk bedömning. Rådgör alltid med en
             läkare innan behandling.
           </p>
-          <p>
-            &copy; {new Date().getFullYear()} RelyOn Beauty Clinic. Alla
-            rättigheter förbehållna.
-          </p>
+          <nav className="flex items-center gap-4">
+            <Link
+              href="/integritet"
+              className="transition-colors hover:text-foreground"
+            >
+              Integritetspolicy
+            </Link>
+            <Link
+              href="/information"
+              className="transition-colors hover:text-foreground"
+            >
+              Viktig information
+            </Link>
+          </nav>
         </div>
+        <p className="mt-4 text-center text-xs text-muted-foreground">
+          &copy; {new Date().getFullYear()} RelyOn Beauty Clinic. Alla
+          rättigheter förbehållna.
+        </p>
       </div>
     </footer>
   );

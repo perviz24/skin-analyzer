@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { RotateCcw, Sparkles, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -90,7 +91,15 @@ export function PhotoPreview({ photo, onRetake, onAnalyzingChange }: PhotoPrevie
         />
         <span className="text-xs text-muted-foreground leading-relaxed">
           Jag godkänner att mitt foto analyseras med AI. Bilden sparas inte och
-          raderas direkt efter analysen.{" "}
+          raderas direkt efter analysen. Läs vår{" "}
+          <Link
+            href="/integritet"
+            className="text-primary underline"
+            onClick={(e) => e.stopPropagation()}
+          >
+            integritetspolicy
+          </Link>
+          .{" "}
           <span className="text-foreground font-medium">
             Analysen är inte en medicinsk bedömning.
           </span>
