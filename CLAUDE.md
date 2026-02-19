@@ -114,7 +114,7 @@ If you skip this → you WILL spiral. This is not optional.
 ```
 5. Commit PROGRESS.md: `docs: update progress checkpoint`
 
-**If PROGRESS.md does not exist after 6 feat: commits → you are violating HARD STOP 6.**
+**If PROGRESS.md does not exist when you try to commit feature #4 → the hook will BLOCK you.**
 
 **Audit lesson:** Session 1 never created PROGRESS.md. Agent lost context awareness.
 **TentaGen lesson:** After context compaction, 7 shipped features were presented as "remaining work."

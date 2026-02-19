@@ -75,6 +75,34 @@ if ! echo "$MSG" | grep -qE '^(feat|fix|refactor|style|docs|chore|perf|test|scaf
     BLOCKED=1
 fi
 
+# ============================================
+# CHECK 4: PROGRESS.md enforcement on feat: commits
+# ============================================
+# PROGRESS.md is MANDATORY after feature #3. Block feature #4+ without it.
+if echo "$MSG" | grep -q "^feat:"; then
+    FEAT_COUNT=$(git log --oneline -30 2>/dev/null | grep -c "^[a-f0-9]* feat:" 2>/dev/null || true)
+    FEAT_COUNT=${FEAT_COUNT:-0}
+
+    # This would be feat #(FEAT_COUNT+1)
+    NEXT_FEAT=$((FEAT_COUNT + 1))
+
+    if [ "$NEXT_FEAT" -ge 4 ] && [ ! -f "PROGRESS.md" ]; then
+        echo ""
+        echo "⛔ BLOCKED: This is feature #$NEXT_FEAT but PROGRESS.md does not exist."
+        echo "   HARD STOP 6: PROGRESS.md is MANDATORY after feature #3."
+        echo "   Run: git log --oneline -30"
+        echo "   Then create PROGRESS.md with: built features, remaining tasks, stats."
+        echo "   Commit PROGRESS.md first (docs: add progress checkpoint), then retry this commit."
+        echo ""
+        BLOCKED=1
+    elif [ "$NEXT_FEAT" -eq 3 ]; then
+        echo ""
+        echo "⚠️  REMINDER: This is feature #3. After committing, create PROGRESS.md (HARD STOP 6)."
+        echo "   Your NEXT feat: commit will be BLOCKED without it."
+        echo ""
+    fi
+fi
+
 if [ "$BLOCKED" -eq 1 ]; then
     echo ""
     echo "Commit blocked. Fix the message and try again."

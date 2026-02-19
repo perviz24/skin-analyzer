@@ -16,6 +16,41 @@ Write-Host "=== AUTONOMOUS VIBE CODER ===" -ForegroundColor Cyan
 Write-Host "Project: Skin Analyzer" -ForegroundColor White
 Write-Host "Path: $ProjectPath" -ForegroundColor Gray
 Write-Host ""
+
+# ============================================
+# MECHANICAL HOOK INSTALLATION
+# Agent cannot be trusted to install hooks itself.
+# This runs BEFORE the agent starts, guaranteeing enforcement.
+# ============================================
+
+# Find all git repos in subfolders (scaffold creates these)
+$GitRepos = Get-ChildItem -Path $ProjectPath -Directory -Recurse -Filter ".git" -Hidden -ErrorAction SilentlyContinue | ForEach-Object { $_.Parent.FullName }
+
+# Also check if project root is a git repo
+if (Test-Path "$ProjectPath\.git") {
+    $GitRepos = @($ProjectPath) + @($GitRepos | Where-Object { $_ -ne $ProjectPath })
+}
+
+foreach ($Repo in $GitRepos) {
+    $HooksSource = "$ProjectPath\.githooks"
+    if (Test-Path $HooksSource) {
+        # Copy hooks into this repo's subfolder if needed
+        $RepoHooksDir = "$Repo\.githooks"
+        if ($Repo -ne $ProjectPath) {
+            if (-not (Test-Path $RepoHooksDir)) {
+                Copy-Item -Path $HooksSource -Destination $RepoHooksDir -Recurse -Force
+                Write-Host "  Copied .githooks to $Repo" -ForegroundColor DarkGray
+            }
+        }
+        # Set core.hooksPath
+        Push-Location $Repo
+        git config core.hooksPath .githooks 2>$null
+        Pop-Location
+        Write-Host "  Hooks installed in: $Repo" -ForegroundColor Green
+    }
+}
+
+Write-Host ""
 Write-Host "Claude will brainstorm, plan, and build autonomously." -ForegroundColor White
 Write-Host "Press Ctrl+C to stop at any time." -ForegroundColor DarkGray
 Write-Host ""
@@ -57,9 +92,9 @@ HARD STOP 5 — PROVE IT (TESTED.md REQUIRED):
   Session 1 scored 3/10 because ZERO Playwright tests were run.
 
 HARD STOP 6 — CONTEXT CHECK (PROGRESS.md REQUIRED):
-  PROGRESS.md is MANDATORY after features #3, #6, #9, #12, #15.
+  PROGRESS.md is MANDATORY after feature #3 (and again at #6, #9, #12, #15).
   Run git log, count features, update TASKS.md from facts not memory, write PROGRESS.md.
-  If PROGRESS.md doesn't exist after 6 feat: commits = HARD STOP 6 violation.
+  The git hook BLOCKS feature #4 if PROGRESS.md doesn't exist. You'll see a reminder at feature #3.
 
 HARD STOP 7 — DESIGN LOCK: Lock colors/fonts in DESIGN-TOKENS.md during scaffold. Never change in Phase 3.
 
@@ -72,12 +107,12 @@ Step 3: Scrape relyonclinic.se with Firecrawl for services, products, branding
 Step 4: Write BRAINSTORM.md, ARCHITECTURE.md, DESIGN-TOKENS.md, DECISIONS.md
 Step 5: Write TASKS.md with sequential build tasks (MVP first)
 Step 6: Scaffold the project (create-next-app, shadcn, packages)
-Step 6b: IMMEDIATELY after git init, run: git config core.hooksPath .githooks
-  This installs pre-commit hooks that BLOCK bad commits automatically.
-  The hooks enforce: file size <300 lines, no feature batching, fix spiral detection, no secrets,
-  TESTED.md required (warns at 3 features, BLOCKS at 5), PROGRESS.md required (warns at 3, BLOCKS at 6).
-  You CANNOT bypass these. They are mechanical. If a commit is blocked, fix the issue first.
-  Copy .githooks/ folder from project root into the scaffolded app folder if scaffold creates a subfolder.
+Step 6b: IMMEDIATELY after git init or npx create-next-app, run BOTH of these commands:
+  cp -r ../../../.githooks .githooks     (copy hooks from skin-analyzer root)
+  git config core.hooksPath .githooks    (activate them)
+  Verify: git config core.hooksPath      (must print ".githooks")
+  These hooks BLOCK bad commits mechanically. If blocked, fix the issue — do NOT use --no-verify.
+  Hooks enforce: file size <300, no batching, fix spiral, no secrets, TESTED.md, PROGRESS.md.
 Step 7: Build features one at a time — obey ALL hard stops
 Step 8: Write SESSION-SUMMARY.md when done or at 15 features
 
@@ -89,3 +124,47 @@ Begin.
 Push-Location $ProjectPath
 & claude --dangerously-skip-permissions --model opus "$prompt" 2>&1 | Tee-Object -FilePath "vibe-log.txt"
 Pop-Location
+
+# ============================================
+# POST-SESSION: Install hooks in any NEW repos the agent created
+# ============================================
+Write-Host ""
+Write-Host "=== POST-SESSION HOOK SWEEP ===" -ForegroundColor Cyan
+
+$NewRepos = Get-ChildItem -Path $ProjectPath -Directory -Recurse -Filter ".git" -Hidden -ErrorAction SilentlyContinue | ForEach-Object { $_.Parent.FullName }
+if (Test-Path "$ProjectPath\.git") {
+    $NewRepos = @($ProjectPath) + @($NewRepos | Where-Object { $_ -ne $ProjectPath })
+}
+
+$HooksInstalled = 0
+foreach ($Repo in $NewRepos) {
+    $HooksSource = "$ProjectPath\.githooks"
+    if (Test-Path $HooksSource) {
+        $RepoHooksDir = "$Repo\.githooks"
+        if (-not (Test-Path $RepoHooksDir)) {
+            Copy-Item -Path $HooksSource -Destination $RepoHooksDir -Recurse -Force
+            Write-Host "  Copied .githooks to $Repo" -ForegroundColor DarkGray
+        }
+        Push-Location $Repo
+        $CurrentPath = git config core.hooksPath 2>$null
+        if ($CurrentPath -ne ".githooks") {
+            git config core.hooksPath .githooks 2>$null
+            Write-Host "  Hooks INSTALLED (was missing): $Repo" -ForegroundColor Yellow
+            $HooksInstalled++
+        } else {
+            Write-Host "  Hooks OK: $Repo" -ForegroundColor Green
+        }
+        Pop-Location
+    }
+}
+
+if ($HooksInstalled -gt 0) {
+    Write-Host ""
+    Write-Host "WARNING: $HooksInstalled repo(s) had hooks missing during the session." -ForegroundColor Red
+    Write-Host "The agent did NOT install hooks itself. Hooks are now installed for future commits." -ForegroundColor Red
+} else {
+    Write-Host "All repos had hooks installed." -ForegroundColor Green
+}
+
+Write-Host ""
+Write-Host "Session complete. Run .\review.ps1 to audit." -ForegroundColor Yellow

@@ -73,22 +73,15 @@ fi
 # ============================================
 # CHECK 4: PROGRESS.md checkpoint enforcement
 # ============================================
-# After 6+ feat: commits, BLOCK if no PROGRESS.md
-if [ "$FEAT_COUNT" -ge 6 ]; then
+# After 3+ feat: commits, BLOCK if no PROGRESS.md (mandatory at feature #3)
+if [ "$FEAT_COUNT" -ge 3 ]; then
     if [ ! -f "PROGRESS.md" ]; then
         echo ""
         echo "⛔ BLOCKED: $FEAT_COUNT features committed but PROGRESS.md does not exist."
-        echo "   HARD STOP 6 requires PROGRESS.md after features #3, #6, #9, #12, #15."
-        echo "   Run git log, update TASKS.md from facts, write PROGRESS.md."
+        echo "   HARD STOP 6: PROGRESS.md is MANDATORY after feature #3."
+        echo "   Run git log, count features, write PROGRESS.md, commit it first."
         echo ""
         BLOCKED=1
-    fi
-elif [ "$FEAT_COUNT" -ge 3 ]; then
-    if [ ! -f "PROGRESS.md" ]; then
-        echo ""
-        echo "⚠️  WARNING: $FEAT_COUNT features committed but no PROGRESS.md yet."
-        echo "   HARD STOP 6: Create PROGRESS.md before feature #6."
-        echo ""
     fi
 fi
 
