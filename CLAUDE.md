@@ -8,9 +8,16 @@ The global C:\Dev\CLAUDE.md has your build process (7 phases), code quality rule
 
 ---
 
+## ⛔ GIT HOOKS (Pre-installed — DO NOT touch)
+Git hooks are mechanically installed in .git/hooks/ before this session starts.
+They enforce file size, batching, fix spiral, TESTED.md, PROGRESS.md, scaffold boundary, and secrets.
+**DO NOT** modify .git/hooks/, run git config core.hooksPath, or copy .githooks/.
+If a hook blocks your commit, **fix the issue** — do NOT use --no-verify.
+
 ## ⛔ HARD STOPS (These override everything — mechanical enforcement)
 
 These are NOT suggestions. These are hard limits that PHYSICALLY stop you.
+Git hooks enforce most of these mechanically. If the hook blocks you, it means you violated a rule.
 
 ### HARD STOP 1: Fix Spiral Kill Switch
 **BEFORE every `fix:` commit, count your recent fixes:**
@@ -83,6 +90,7 @@ If you skip this → you WILL spiral. This is not optional.
 ```
 
 **If you haven't written to TESTED.md → you CANNOT commit the feature.**
+**The git hook BLOCKS feature #4+ if TESTED.md does not exist. Create it early.**
 **If TESTED.md doesn't exist when you write SESSION-SUMMARY.md → you violated HARD STOP 5.**
 
 **SESSION-SUMMARY.md feature status uses ONLY these values:**
@@ -164,7 +172,7 @@ Do NOT push past 15 features. Quality degrades. Start a new session.
 7. Write DECISIONS.md with every choice and WHY
 8. Write TASKS.md breaking the build into small sequential features
 9. For each task: follow micro-cycle from parent CLAUDE.md + ALL hard stops above
-10. After every 5th feature: HARD STOP 6 (context check)
+10. After every 3rd feature: HARD STOP 6 (context check — hook blocks feat #4 without PROGRESS.md)
 11. After 15 features: HARD STOP 8 (session end)
 12. Write SESSION-SUMMARY.md
 
