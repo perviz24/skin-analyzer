@@ -1,0 +1,6 @@
+User-Agent: *
+Allow: /
+Disallow: /api/
+Disallow: /resultat/
+
+Sitemap: https://hudanalys.vercel.app/sitemap.xml
