@@ -14,20 +14,25 @@
 - feat: add per-page metadata layouts for analysera and resultat — a9f30d5
 
 ### Session 2
-- docs: add PROGRESS.md + demo mode API route — 460992c
 - feat: add privacy policy page — 321e5e4
 - feat: add medical disclaimer page — e5aca23
+- feat: add legal links to footer — e3913a8
+- feat: add dark mode support — 449aa51
+
+### Session 3
+- feat: add mobile navigation menu — 8898767
+- feat: add smooth scroll behavior — dbe3761
+- feat: add SEO files — 5e10205
 
 ## Remaining
-- [ ] Footer legal links (connect /integritet + /information)
-- [ ] Dark mode support (next-themes)
-- [ ] Mobile navigation menu (hamburger/sheet)
-- [ ] Smooth scroll behavior
-- [ ] SEO files (robots.txt + sitemap)
+- [ ] OG metadata / social sharing image
+- [ ] Image compression before upload
+- [ ] Error handling for API failures
+- [ ] Mobile responsive audit
 - [ ] T8: Convex setup (blocked — needs human action)
 - [ ] T13: Photo overlay markers (deferred)
 
 ## Stats
-- Features committed: 8 (session 1) + 3 (session 2)
-- Fix commits: 2
+- Features committed: 8 (session 1) + 4 (session 2) + 3 (session 3)
+- Fix commits: 2 (session 2, hook enforcement)
 - Files over 200 lines: none
