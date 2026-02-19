@@ -15,3 +15,4 @@
 | SEO robots.txt | /robots.txt | 0 | Serves correctly, allows /, disallows /api/ and /resultat/, links sitemap | PASS |
 | SEO sitemap.xml | /sitemap.xml | 0 | 4 URLs generated: /, /analysera, /integritet, /information with correct priorities | PASS |
 | Image compression | /analysera | 0 | Upload test-image.png → compressed via canvas → preview shows, consent checkbox + analyze button appear | PASS |
+| Error handling + demo flow | /analysera → /resultat/[id] | 0 | Upload → consent → analyze → demo results page. Timeout (30s) + offline detection added | PASS |

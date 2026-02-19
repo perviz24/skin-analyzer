@@ -34,11 +34,17 @@ export function PhotoPreview({ photo, onRetake, onAnalyzingChange }: PhotoPrevie
     setAnalyzing(true);
 
     try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 30000);
+
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ image: photo }),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeout);
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -51,8 +57,14 @@ export function PhotoPreview({ photo, onRetake, onAnalyzingChange }: PhotoPrevie
       sessionStorage.setItem(`analysis-${data.id}`, JSON.stringify(data));
       router.push(`/resultat/${data.id}`);
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Något gick fel. Försök igen.";
+      let message = "Något gick fel. Försök igen.";
+      if (err instanceof DOMException && err.name === "AbortError") {
+        message = "Analysen tog för lång tid. Försök igen med en tydligare bild.";
+      } else if (err instanceof TypeError && err.message === "Failed to fetch") {
+        message = "Ingen internetanslutning. Kontrollera din uppkoppling.";
+      } else if (err instanceof Error) {
+        message = err.message;
+      }
       toast.error(message);
       setAnalyzing(false);
     }
