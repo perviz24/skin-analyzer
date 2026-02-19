@@ -16,3 +16,6 @@
 | SEO sitemap.xml | /sitemap.xml | 0 | 4 URLs generated: /, /analysera, /integritet, /information with correct priorities | PASS |
 | Image compression | /analysera | 0 | Upload test-image.png → compressed via canvas → preview shows, consent checkbox + analyze button appear | PASS |
 | Error handling + demo flow | /analysera → /resultat/[id] | 0 | Upload → consent → analyze → demo results page. Timeout (30s) + offline detection added | PASS |
+| Mobile audit: Landing | / (375px) | 0 | Hero stacks, CTAs full-width, trust badges 2x2 grid, footer stacks. Score: 8.5/10 | PASS |
+| Mobile audit: Upload | /analysera (375px) | 0 | Camera card, upload button, tips section stack cleanly. Score: 9/10 | PASS |
+| Mobile audit: Results | /resultat/[id] (375px) | 0 | Score card, findings, treatment cards, CTAs all stack properly. Score: 9/10 | PASS |
