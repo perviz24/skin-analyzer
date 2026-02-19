@@ -7,3 +7,4 @@
 | Results empty state | /resultat/test-123 | 0 | "Resultat hittades inte" + CTA to new analysis | PASS |
 | Demo mode full flow | /analysera → /resultat/[id] | 0 | Upload → consent → analyze → score 74, 3 findings, 2 recommendations, demo banner | PASS |
 | Privacy policy | /integritet | 0 | 8 GDPR sections rendered, back nav to home works | PASS |
+| Disclaimer page | /information | 0 | Medical warning, can/can't lists, clinic links, back nav | PASS |
